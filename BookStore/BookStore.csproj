@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmHelper.cs" />
     <Compile Include="Book.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="MyOrderQueue.cs" />
