@@ -8,6 +8,26 @@ using System.Threading.Tasks;
 namespace BookStore
 {
     public class AlgorithmHelper {
+        public static int BinarySearchOrders(Order[] orders, int count, int targetID)
+        {
+            int low = 0;
+            int high = count - 1;
+
+            while (low <= high)
+            {
+                int mid = low + (high - low) / 2;
+
+                if (orders[mid].OrderID == targetID)
+                    return mid;
+
+                if (orders[mid].OrderID < targetID)
+                    low = mid + 1;
+                else
+                    high = mid - 1;
+            }
+            return -1; // Not found
+        }
+
         public static void QuickSortBooks(List<Book> books, int low, int high)
         {
             if (low < high)
