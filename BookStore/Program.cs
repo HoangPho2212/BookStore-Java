@@ -47,6 +47,21 @@ namespace Bookstore
                 Console.WriteLine($"OrderID {processedOrder.OrderID} for {processedOrder.CustomerName} is now complete.");
             }
 
+            Console.WriteLine("\n--- System: Tracking Order ---");
+            int searchID = 101;
+
+            Order[] mockDatabase = { order1 };
+            int resultIndex = AlgorithmHelper.BinarySearchOrders(mockDatabase, mockDatabase.Length, searchID);
+
+            if (resultIndex != -1)
+            {
+                Console.WriteLine($"Order {searchID} found! Status: {mockDatabase[resultIndex].Status}");
+            }
+            else
+            {
+                Console.WriteLine($"Order {searchID} not found in system.");
+            }
+
             Console.WriteLine("\nTask finished. Press any key to close.");
             Console.ReadKey();
         }
