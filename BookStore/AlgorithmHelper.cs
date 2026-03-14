@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace BookStore
 {
     public class AlgorithmHelper {
@@ -28,7 +29,28 @@ namespace BookStore
             return -1; // Not found
         }
 
-        public static void QuickSortBooks(List<Book> books, int low, int high, string sortBy)
+        public static int ManualStringCompare(string s1, string s2)
+        {
+            if (s1 == null && s2 == null) return 0;
+            if (s1 == null) return -1;
+            if (s2 == null) return 1;
+
+            int len1 = s1.Length;
+            int len2 = s2.Length;
+            int minLen = len1 < len2 ? len1 : len2;
+
+            for (int i = 0; i < minLen; i++)
+            {
+                if (s1[i] < s2[i]) return -1;
+                if (s1[i] > s2[i]) return 1;
+            }
+
+            if (len1 < len2) return -1;
+            if (len1 > len2) return 1;
+            return 0;
+        }
+
+        public static void QuickSortBooks(MyArrayList<Book> books, int low, int high, string sortBy)
         {
             if (low < high)
             {
@@ -38,7 +60,7 @@ namespace BookStore
             }
         }
 
-        private static int PartitionBooks(List<Book> books, int low, int high, string sortBy)
+        private static int PartitionBooks(MyArrayList<Book> books, int low, int high, string sortBy)
         {
             Book pivot = books[high];
             int i = (low - 1);
@@ -46,13 +68,14 @@ namespace BookStore
             for (int j = low; j < high; j++)
             {
                 bool compare = false;
-                if (sortBy.ToLower() == "author")
+                // Manual check instead of ToLower()
+                if (sortBy == "author" || sortBy == "Author")
                 {
-                    compare = string.Compare(books[j].Author, pivot.Author) < 0;
+                    compare = ManualStringCompare(books[j].Author, pivot.Author) < 0;
                 }
                 else // Default to Title
                 {
-                    compare = string.Compare(books[j].Title, pivot.Title) < 0;
+                    compare = ManualStringCompare(books[j].Title, pivot.Title) < 0;
                 }
 
                 if (compare)
@@ -69,7 +92,7 @@ namespace BookStore
             return i + 1;
         }
 
-        public static void QuickSortOrders(List<Order> orders, int low, int high)
+        public static void QuickSortOrders(MyArrayList<Order> orders, int low, int high)
         {
             if (low < high)
             {
@@ -79,7 +102,7 @@ namespace BookStore
             }
         }
 
-        private static int PartitionOrders(List<Order> orders, int low, int high)
+        private static int PartitionOrders(MyArrayList<Order> orders, int low, int high)
         {
             int pivot = orders[high].OrderID;
             int i = (low - 1);

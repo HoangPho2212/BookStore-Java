@@ -45,10 +45,12 @@
   <ItemGroup>
     <Compile Include="AlgorithmHelper.cs" />
     <Compile Include="Book.cs" />
+    <Compile Include="MyArrayList.cs" />
     <Compile Include="MyStack.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="MyOrderQueue.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
