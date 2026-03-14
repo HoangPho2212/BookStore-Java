@@ -20,10 +20,10 @@ namespace BookStore
             {
                 Console.WriteLine("\n--- GREENWICH ONLINE BOOKSTORE ---");
                 Console.WriteLine("1. Place New Order (Enqueue)");
-                Console.WriteLine("2. Confirm Availability & Sort (Process)");
-                Console.WriteLine("3. Undo Last Process (Pop Stack)");
-                Console.WriteLine("4. Track Order Status (Binary Search)");
-                Console.WriteLine("5. Manage Inventory (Add/Search)");
+                Console.WriteLine("2. Manage Inventory (Add/Search)");
+                Console.WriteLine("3. Confirm Availability & Sort (Process)");
+                Console.WriteLine("4. Undo Last Process (Pop Stack)");
+                Console.WriteLine("5. Track Order Status (Binary Search)");
                 Console.WriteLine("6. Exit");
                 Console.Write("Select: ");
                 string choice = Console.ReadLine();
@@ -58,7 +58,7 @@ namespace BookStore
                             string title = Console.ReadLine();
                             
                             // Search inventory for availability
-                            Book invBook = inventory.Find(b => AlgorithmHelper.ManualStringCompare(b.Title, title) == 0);
+                            Book invBook = inventory.Find(b => AlgorithmHelper.ManualContains(b.Title, title));
                             if (invBook == null)
                             {
                                 Console.WriteLine($">>> Warning: '{title}' is not in inventory. Staff check required.");
@@ -80,6 +80,70 @@ namespace BookStore
                         break;
 
                     case "2":
+                        Console.WriteLine("\n--- INVENTORY MANAGEMENT ---");
+                        Console.WriteLine("1. Add/Update Book Stock");
+                        Console.WriteLine("2. Search Book Availability");
+                        Console.WriteLine("3. View All Inventory");
+                        Console.WriteLine("4. Back");
+                        Console.Write("Select: ");
+                        string invChoice = Console.ReadLine();
+                        if (invChoice == "1")
+                        {
+                            Console.Write("Enter Title: ");
+                            string title = Console.ReadLine();
+                            Console.Write("Enter Author: ");
+                            string author = Console.ReadLine();
+                            Console.Write("Enter Quantity: ");
+                            int qty = int.Parse(Console.ReadLine());
+
+                            // Exact match (case-insensitive) for updating stock
+                            Book existing = inventory.Find(b => 
+                                AlgorithmHelper.ManualEqualsIgnoreCase(b.Title, title) && 
+                                AlgorithmHelper.ManualEqualsIgnoreCase(b.Author, author));
+
+                            if (existing != null)
+                            {
+                                existing.Quantity += qty;
+                                Console.WriteLine($">>> Updated: {existing.Title} now has {existing.Quantity} copies.");
+                            }
+                            else
+                            {
+                                inventory.Add(new Book { Title = title, Author = author, Quantity = qty });
+                                Console.WriteLine($">>> Added: New book '{title}' added to inventory.");
+                            }
+                        }
+                        else if (invChoice == "2")
+                        {
+                            Console.Write("Enter Title keyword to search: ");
+                            string searchTitle = Console.ReadLine();
+                            
+                            Console.WriteLine("\n--- SEARCH RESULTS ---");
+                            bool foundAny = false;
+                            for (int i = 0; i < inventory.Count; i++)
+                            {
+                                if (AlgorithmHelper.ManualContains(inventory[i].Title, searchTitle))
+                                {
+                                    Console.WriteLine($"- {inventory[i].Title} by {inventory[i].Author} (Stock: {inventory[i].Quantity})");
+                                    foundAny = true;
+                                }
+                            }
+
+                            if (!foundAny)
+                            {
+                                Console.WriteLine(">>> No similar books found in inventory.");
+                            }
+                        }
+                        else if (invChoice == "3")
+                        {
+                            Console.WriteLine("\n--- CURRENT INVENTORY ---");
+                            for (int i = 0; i < inventory.Count; i++)
+                            {
+                                Console.WriteLine($"- {inventory[i].Title} by {inventory[i].Author} (Stock: {inventory[i].Quantity})");
+                            }
+                        }
+                        break;
+
+                    case "3":
                         Order toProc = pendingQueue.Dequeue();
                         if (toProc != null)
                         {
@@ -100,7 +164,7 @@ namespace BookStore
                         }
                         break;
 
-                    case "3":
+                    case "4":
                         Order undone = historyStack.Pop();
                         if (undone != null)
                         {
@@ -115,7 +179,7 @@ namespace BookStore
                         }
                         break;
 
-                    case "4":
+                    case "5":
                         if (processedOrders.Count == 0 && pendingQueue.Count == 0)
                         {
                             Console.WriteLine(">>> No orders in the system to track.");
@@ -146,62 +210,6 @@ namespace BookStore
                         }
 
                         Console.WriteLine(">>> Order not found.");
-                        break;
-
-                    case "5":
-                        Console.WriteLine("\n--- INVENTORY MANAGEMENT ---");
-                        Console.WriteLine("1. Add/Update Book Stock");
-                        Console.WriteLine("2. Search Book Availability");
-                        Console.WriteLine("3. View All Inventory");
-                        Console.WriteLine("4. Back");
-                        Console.Write("Select: ");
-                        string invChoice = Console.ReadLine();
-                        if (invChoice == "1")
-                        {
-                            Console.Write("Enter Title: ");
-                            string title = Console.ReadLine();
-                            Console.Write("Enter Author: ");
-                            string author = Console.ReadLine();
-                            Console.Write("Enter Quantity: ");
-                            int qty = int.Parse(Console.ReadLine());
-
-                            Book existing = inventory.Find(b => 
-                                AlgorithmHelper.ManualStringCompare(b.Title, title) == 0 && 
-                                AlgorithmHelper.ManualStringCompare(b.Author, author) == 0);
-
-                            if (existing != null)
-                            {
-                                existing.Quantity += qty;
-                                Console.WriteLine($">>> Updated: {title} now has {existing.Quantity} copies.");
-                            }
-                            else
-                            {
-                                inventory.Add(new Book { Title = title, Author = author, Quantity = qty });
-                                Console.WriteLine($">>> Added: New book '{title}' added to inventory.");
-                            }
-                        }
-                        else if (invChoice == "2")
-                        {
-                            Console.Write("Enter Title to search: ");
-                            string searchTitle = Console.ReadLine();
-                            Book found = inventory.Find(b => AlgorithmHelper.ManualStringCompare(b.Title, searchTitle) == 0);
-                            if (found != null)
-                            {
-                                Console.WriteLine($">>> Found: '{found.Title}' by {found.Author} - Stock: {found.Quantity}");
-                            }
-                            else
-                            {
-                                Console.WriteLine(">>> Book not found in inventory.");
-                            }
-                        }
-                        else if (invChoice == "3")
-                        {
-                            Console.WriteLine("\n--- CURRENT INVENTORY ---");
-                            for (int i = 0; i < inventory.Count; i++)
-                            {
-                                Console.WriteLine($"- {inventory[i].Title} by {inventory[i].Author} (Stock: {inventory[i].Quantity})");
-                            }
-                        }
                         break;
 
                     case "6":

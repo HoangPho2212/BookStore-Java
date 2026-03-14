@@ -50,6 +50,52 @@ namespace BookStore
             return 0;
         }
 
+        public static bool ManualEqualsIgnoreCase(string s1, string s2)
+        {
+            if (s1 == null || s2 == null) return s1 == s2;
+            if (s1.Length != s2.Length) return false;
+
+            for (int i = 0; i < s1.Length; i++)
+            {
+                char c1 = s1[i];
+                char c2 = s2[i];
+
+                if (c1 >= 'A' && c1 <= 'Z') c1 = (char)(c1 + 32);
+                if (c2 >= 'A' && c2 <= 'Z') c2 = (char)(c2 + 32);
+
+                if (c1 != c2) return false;
+            }
+            return true;
+        }
+
+        public static bool ManualContains(string source, string target)
+        {
+            if (source == null || target == null) return false;
+            if (target.Length == 0) return true;
+            if (target.Length > source.Length) return false;
+
+            for (int i = 0; i <= source.Length - target.Length; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < target.Length; j++)
+                {
+                    char c1 = source[i + j];
+                    char c2 = target[j];
+
+                    if (c1 >= 'A' && c1 <= 'Z') c1 = (char)(c1 + 32);
+                    if (c2 >= 'A' && c2 <= 'Z') c2 = (char)(c2 + 32);
+
+                    if (c1 != c2)
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) return true;
+            }
+            return false;
+        }
+
         public static void QuickSortBooks(MyArrayList<Book> books, int low, int high, string sortBy)
         {
             if (low < high)
